@@ -1,9 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ScrollBar from './Scrollbar';
 import {findDOMNode, warnAboutFunctionChild, warnAboutElementChild, positiveOrZero, modifyObjValues} from './utils';
 import lineHeight from 'line-height';
 import {Motion, spring} from 'react-motion';
-import PropTypes from 'prop-types';
 
 const eventTypes = {
     wheel: 'wheel',
@@ -92,33 +92,43 @@ export default class ScrollArea extends React.Component {
 
         let scrollbarY = this.canScrollY() ? (
             <ScrollBar
-                ownerDocument={ownerDocument}
-                realSize={this.state.realHeight}
+                containerClassName={this.props.verticalContainerClassName}
+                containerClassNameActive={this.props.verticalContainerClassNameActive}
+                containerClassNameHorizontal={this.props.verticalContainerClassNameHorizontal}
+                containerClassNameVertical={this.props.verticalContainerClassNameVertical}
                 containerSize={this.state.containerHeight}
-                position={this.state.topPosition}
-                onMove={this.handleScrollbarMove.bind(this)}
-                onPositionChange={this.handleScrollbarYPositionChange.bind(this)}
                 containerStyle={this.props.verticalContainerStyle}
-                scrollbarStyle={this.props.verticalScrollbarStyle}
-                smoothScrolling={withMotion}
                 minScrollSize={this.props.minScrollSize}
                 onFocus={this.focusContent.bind(this)}
+                onMove={this.handleScrollbarMove.bind(this)}
+                onPositionChange={this.handleScrollbarYPositionChange.bind(this)}
+                ownerDocument={ownerDocument}
+                position={this.state.topPosition}
+                realSize={this.state.realHeight}
+                scrollbarClassName={this.props.verticalScrollbarClassName}
+                scrollbarStyle={this.props.verticalScrollbarStyle}
+                smoothScrolling={withMotion}
                 type="vertical"/>
         ) : null;
 
         let scrollbarX = this.canScrollX() ? (
             <ScrollBar
-                ownerDocument={ownerDocument}
-                realSize={this.state.realWidth}
+                containerClassName={this.props.horizontalContainerClassName}
+                containerClassNameActive={this.props.horizontalContainerClassNameActive}
+                containerClassNameHorizontal={this.props.horizontalContainerClassNameHorizontal}
+                containerClassNameVertical={this.props.horizontalContainerClassNameVertical}
                 containerSize={this.state.containerWidth}
-                position={this.state.leftPosition}
-                onMove={this.handleScrollbarMove.bind(this)}
-                onPositionChange={this.handleScrollbarXPositionChange.bind(this)}
                 containerStyle={this.props.horizontalContainerStyle}
-                scrollbarStyle={this.props.horizontalScrollbarStyle}
-                smoothScrolling={withMotion}
                 minScrollSize={this.props.minScrollSize}
                 onFocus={this.focusContent.bind(this)}
+                onMove={this.handleScrollbarMove.bind(this)}
+                onPositionChange={this.handleScrollbarXPositionChange.bind(this)}
+                ownerDocument={ownerDocument}
+                position={this.state.leftPosition}
+                realSize={this.state.realWidth}
+                scrollbarClassName={this.props.horizontalScrollbarClassName}
+                scrollbarStyle={this.props.horizontalScrollbarStyle}
+                smoothScrolling={withMotion}
                 type="horizontal"/>
         ) : null;
 
@@ -365,10 +375,10 @@ export default class ScrollArea extends React.Component {
     }
 
     computeSizes() {
-        let realHeight = this.content.offsetHeight;
-        let containerHeight = this.wrapper.offsetHeight;
-        let realWidth = this.content.offsetWidth;
-        let containerWidth = this.wrapper.offsetWidth;
+        let realHeight = (this.content) ? this.content.offsetHeight : 0;
+        let containerHeight = (this.wrapper) ? this.wrapper.offsetHeight : 0;
+        let realWidth = (this.content) ? this.content.offsetWidth : 0;
+        let containerWidth = (this.wrapper) ? this.wrapper.offsetWidth : 0;
 
         return {
             realHeight: realHeight,
@@ -452,33 +462,39 @@ ScrollArea.childContextTypes = {
 
 ScrollArea.propTypes = {
     className: PropTypes.string,
-    style: PropTypes.object,
-    speed: PropTypes.number,
     contentClassName: PropTypes.string,
     contentStyle: PropTypes.object,
-    vertical: PropTypes.bool,
-    verticalContainerStyle: PropTypes.object,
-    verticalScrollbarStyle: PropTypes.object,
-    horizontal: PropTypes.bool,
-    horizontalContainerStyle: PropTypes.object,
-    horizontalScrollbarStyle: PropTypes.object,
-    onScroll: PropTypes.func,
     contentWindow: PropTypes.any,
+    focusableTabIndex: PropTypes.number,
+    horizontal: PropTypes.bool,
+    horizontalContainerClassNameActive: PropTypes.string,
+    horizontalContainerStyle: PropTypes.object,
+    horizontalSContainerClassName: PropTypes.string,
+    horizontalScrollbarClassName: PropTypes.string,
+    horizontalScrollbarStyle: PropTypes.object,
+    minScrollSize: PropTypes.number,
+    onScroll: PropTypes.func,
     ownerDocument: PropTypes.any,
     smoothScrolling: PropTypes.bool,
-    minScrollSize: PropTypes.number,
-    swapWheelAxes: PropTypes.bool,
+    speed: PropTypes.number,
     stopScrollPropagation: PropTypes.bool,
-    focusableTabIndex: PropTypes.number
+    style: PropTypes.object,
+    swapWheelAxes: PropTypes.bool,
+    vertical: PropTypes.bool,
+    verticalContainerClassName: PropTypes.string,
+    verticalContainerClassNameActive: PropTypes.string,
+    verticalContainerStyle: PropTypes.object,
+    verticalScrollbarClassName: PropTypes.string,
+    verticalScrollbarStyle: PropTypes.object,
 };
 
 ScrollArea.defaultProps = {
-    speed: 1,
-    vertical: true,
-    horizontal: true,
-    smoothScrolling: false,
-    swapWheelAxes: false,
     contentWindow: (typeof window === "object") ? window : undefined,
+    focusableTabIndex: 1,
+    horizontal: true,
     ownerDocument: (typeof document === "object") ? document : undefined,
-    focusableTabIndex: 1
+    smoothScrolling: false,
+    speed: 1,
+    swapWheelAxes: false,
+    vertical: true,
 };
